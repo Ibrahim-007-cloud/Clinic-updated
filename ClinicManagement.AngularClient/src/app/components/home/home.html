@@ -1,0 +1,117 @@
+<!-- HERO SECTION -->
+<div class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>Helping Your<br><span>Stay Healthy</span></h1>
+      <p>Everyday we bring hope and care to the patients we serve. Manage your clinic efficiently with our complete system.</p>
+      <div class="hero-buttons">
+        <button class="btn-hero-primary" routerLink="/patients">View Patients</button>
+        <button class="btn-hero-secondary" routerLink="/visits">Book Visit</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="hero-card-float">
+        <span>🏥</span>
+        <div>
+          <strong>Clinic Management</strong>
+          <small>Complete Healthcare System</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS SECTION -->
+<div class="stats-section">
+  <div class="stat-box" routerLink="/patients">
+    <div class="stat-icon-wrap blue">👤</div>
+    <div class="stat-details">
+      <h2>{{ totalPatients }}</h2>
+      <p>Total Patients</p>
+    </div>
+  </div>
+  <div class="stat-box" routerLink="/doctors">
+    <div class="stat-icon-wrap green">🩺</div>
+    <div class="stat-details">
+      <h2>{{ totalDoctors }}</h2>
+      <p>Total Doctors</p>
+    </div>
+  </div>
+  <div class="stat-box" routerLink="/visits">
+    <div class="stat-icon-wrap orange">📋</div>
+    <div class="stat-details">
+      <h2>{{ totalVisits }}</h2>
+      <p>Total Visits</p>
+    </div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon-wrap purple">⏰</div>
+    <div class="stat-details">
+      <h2>24/7</h2>
+      <p>Service Hours</p>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES SECTION -->
+<div class="services-section">
+  <div class="section-header">
+    <h2>Our Services</h2>
+    <p>Everything you need to manage your clinic efficiently</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card" routerLink="/patients">
+      <div class="service-icon">👤</div>
+      <h3>Patient Management</h3>
+      <p>Register, update, and track complete patient records including personal and medical history.</p>
+      <span class="service-link">Manage Patients →</span>
+    </div>
+    <div class="service-card" routerLink="/doctors">
+      <div class="service-icon">🩺</div>
+      <h3>Doctor Directory</h3>
+      <p>Manage doctor profiles, specializations, and track their patient visit history.</p>
+      <span class="service-link">Manage Doctors →</span>
+    </div>
+    <div class="service-card" routerLink="/visits">
+      <div class="service-icon">📋</div>
+      <h3>Visit Records</h3>
+      <p>Log patient visits, assign doctors, record problems and maintain complete visit history.</p>
+      <span class="service-link">Manage Visits →</span>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔍</div>
+      <h3>Smart Search</h3>
+      <p>Quickly find patients by name or contact number with real-time search functionality.</p>
+      <span class="service-link">Search Records →</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK ACCESS SECTION -->
+<div class="quick-access-section">
+  <div class="section-header light">
+    <h2>Quick Actions</h2>
+    <p>Get started quickly with common tasks</p>
+  </div>
+  <div class="quick-grid">
+    <button class="quick-btn" routerLink="/patients/add">
+      <span>➕</span> Add New Patient
+    </button>
+    <button class="quick-btn" routerLink="/doctors/add">
+      <span>➕</span> Add New Doctor
+    </button>
+    <button class="quick-btn" routerLink="/visits/add">
+      <span>📅</span> Log a Visit
+    </button>
+    <button class="quick-btn" routerLink="/patients">
+      <span>📊</span> View All Records
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="clinic-footer">
+  <p>🏥 <strong>Clinic Management System</strong> — Built with Angular & .NET Core</p>
+  <p>Air University, Islamabad | BSIT-II Web Technologies</p>
+</div>

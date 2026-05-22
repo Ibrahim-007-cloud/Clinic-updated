@@ -1,49 +1,49 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using ClinicManagement.Application.Interfaces;
 using ClinicManagement.Infrastructure.Data;
+using ClinicManagement.Application.Interfaces;
 using ClinicManagement.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ClinicDbContext>(options =>
-    options.UseSqlite("Data Source=../ClinicManagement.Infrastructure/clinic.db")); 
-
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-
+// Services
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
 
+// SQLite Database
+builder.Services.AddDbContext<ClinicDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Dependency Injection - Repository Pattern
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IVisitRepository, VisitRepository>();
+
+// CORS for Angular
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AngularAppPolicy", policy =>
-    {
+    options.AddPolicy("AllowAngular", policy =>
         policy.WithOrigins("http://localhost:4200")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(); 
-}
-
-app.UseCors("AngularAppPolicy");
-app.UseAuthorization();
-app.MapControllers();
-
+// Auto-create and migrate database on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ClinicDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("AllowAngular");
+app.UseAuthorization();
+app.MapControllers();
 app.Run();

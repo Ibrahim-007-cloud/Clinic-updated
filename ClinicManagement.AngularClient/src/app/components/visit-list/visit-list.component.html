@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h1>📋 Visit Records</h1>
+  <p>Track all patient visits and medical history</p>
+</div>
+
+<div class="clinic-card">
+  <div class="search-bar">
+    <h3 style="margin:0; color:#333;">All Visits</h3>
+    <button class="btn-add" (click)="addVisit()">+ Add Visit</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert-error">⚠️ {{ errorMessage }}</div>
+
+  <table class="clinic-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Patient</th>
+        <th>Doctor</th>
+        <th>Problem</th>
+        <th>Visit Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of visits; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td><strong>{{ v.patientName }}</strong></td>
+        <td>{{ v.doctorName }}</td>
+        <td>{{ v.problem }}</td>
+        <td>📅 {{ v.visitDate | date:'mediumDate' }}</td>
+        <td>
+          <button class="btn-edit" (click)="editVisit(v.id!)">✏️ Edit</button>
+          <button class="btn-delete" (click)="deleteVisit(v.id!)">🗑️ Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="visits.length === 0">
+        <td colspan="6">
+          <div class="empty-state">
+            <div class="icon">📋</div>
+            <p>No visits recorded. Click <strong>+ Add Visit</strong> to get started.</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,57 +1,61 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PatientService } from '../../services/patient.service';
-import { Doctor } from '../../models/patient';
 
 @Component({
   selector: 'app-patient-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './patient-form.component.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './patient-form.component.html',
+  styleUrl: './patient-form.css'
 })
 export class PatientFormComponent implements OnInit {
-  patientForm!: FormGroup;
-  doctors: Doctor[] = [];
+  patient = { name: '', age: 0, gender: '', contact: '' };
+  isEdit = false;
+  patientId: number = 0;
+  errorMessage = '';
+  successMessage = '';
 
   constructor(
-    private fb: FormBuilder,
-    private service: PatientService,
-    private router: Router
+    private patientService: PatientService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.patientForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      age: ['', [Validators.required, Validators.min(0), Validators.max(125)]],
-      gender: ['Male', Validators.required],
-      contact: ['', [Validators.required, Validators.pattern('^[0-9\\-\\+]{7,15}$')]],
-      initialDoctorId: ['', Validators.required],
-      initialProblem: ['', [Validators.required, Validators.maxLength(500)]]
-    });
-
-    this.service.getDoctors().subscribe((data: Doctor[]) => this.doctors = data);
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEdit = true;
+      this.patientId = +id;
+      this.patientService.getPatientById(this.patientId).subscribe({
+        next: (data) => {
+          this.patient.name = data.name;
+          this.patient.age = data.age;
+          this.patient.gender = data.gender;
+          this.patient.contact = data.contact;
+        },
+        error: () => this.errorMessage = 'Failed to load patient.'
+      });
+    }
   }
 
-  saveRegistry(): void {
-    if (this.patientForm.invalid) return;
+  onSubmit(): void {
+    if (this.isEdit) {
+      this.patientService.updatePatient(this.patientId, this.patient).subscribe({
+        next: () => this.router.navigate(['/patients']),
+        error: () => this.errorMessage = 'Failed to update patient.'
+      });
+    } else {
+      this.patientService.createPatient(this.patient).subscribe({
+        next: () => this.router.navigate(['/patients']),
+        error: () => this.errorMessage = 'Failed to create patient.'
+      });
+    }
+  }
 
-    const val = this.patientForm.value;
-    const modelPayload = {
-      name: val.name,
-      age: val.age,
-      gender: val.gender,
-      contact: val.contact,
-      visits: [{
-        doctorId: parseInt(val.initialDoctorId),
-        problem: val.initialProblem
-      }]
-    };
-
-    this.service.createPatient(modelPayload).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: (err: any) => alert('Error committing pipeline payload: ' + err.message)
-    });
+  cancel(): void {
+    this.router.navigate(['/patients']);
   }
 }

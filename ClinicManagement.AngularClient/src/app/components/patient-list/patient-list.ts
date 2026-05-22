@@ -1,36 +1,53 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './patient-list.component.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './patient-list.component.html',
+  styleUrl: './patient-list.css'
 })
 export class PatientListComponent implements OnInit {
   patients: Patient[] = [];
-  searchTerm: string = '';
+  search: string = '';
+  errorMessage: string = '';
 
-  constructor(private service: PatientService) {}
+  constructor(private patientService: PatientService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadPatients();
   }
 
   loadPatients(): void {
-    this.service.getPatients(this.searchTerm).subscribe({
-      next: (data: Patient[]) => this.patients = data,
-      error: (err: any) => console.error('Data pull error:', err)
+    this.patientService.getPatients(this.search).subscribe({
+      next: (data) => this.patients = data,
+      error: () => this.errorMessage = 'Failed to load patients.'
     });
   }
 
-  deleteRecord(id: number): void {
-    if (confirm('Are you absolutely certain you wish to delete this medical record card?')) {
-      this.service.deletePatient(id).subscribe(() => this.loadPatients());
+  onSearch(): void {
+    this.loadPatients();
+  }
+
+  editPatient(id: number): void {
+    this.router.navigate(['/patients/edit', id]);
+  }
+
+  deletePatient(id: number): void {
+    if (confirm('Are you sure you want to delete this patient?')) {
+      this.patientService.deletePatient(id).subscribe({
+        next: () => this.loadPatients(),
+        error: () => this.errorMessage = 'Failed to delete patient.'
+      });
     }
+  }
+
+  addPatient(): void {
+    this.router.navigate(['/patients/add']);
   }
 }

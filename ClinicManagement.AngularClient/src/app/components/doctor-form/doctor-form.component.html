@@ -1,0 +1,16 @@
+<div class="container mt-4" style="max-width: 500px;">
+  <h2>{{ isEdit ? 'Edit Doctor' : 'Add Doctor' }}</h2>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input [(ngModel)]="doctor.name" name="name" required class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Specialization</label>
+      <input [(ngModel)]="doctor.specialization" name="specialization" required class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success me-2">{{ isEdit ? 'Update' : 'Save' }}</button>
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+  </form>
+</div>
